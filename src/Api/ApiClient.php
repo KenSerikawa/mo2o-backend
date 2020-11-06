@@ -8,6 +8,9 @@ use GuzzleHttp\Client;
 use App\Api\ApiClientInterface;
 use GuzzleHttp\ClientInterface;
 
+use function Lambdish\Phunctional\get;
+use function Lambdish\Phunctional\map;
+
 final class ApiClient implements ApiClientInterface
 {
     /** @var Client */
@@ -23,6 +26,8 @@ final class ApiClient implements ApiClientInterface
         $res = $this->client->get("beers", $this->prepareQueryParameters($query));
 
         $beers = json_decode($res->getBody()->getContents(), true);
+
+        return $this->parseBeersResponse($beers);
     }
 
     private function prepareQueryParameters(?string $query)
@@ -36,5 +41,21 @@ final class ApiClient implements ApiClientInterface
         }
 
         return [];
+    }
+
+    private function parseBeersResponse(array $beers)
+    {
+        return map(function($beer) {
+            return $this->extractCommonBeerProperties($beer);
+        }, $beers);
+    }
+
+    private function extractCommonBeerProperties(array $beer)
+    {
+        return [
+            'id'          => get('id', $beer),
+            'name'        => get('name', $beer),
+            'description' => get('description', $beer)
+        ];
     }
 }
