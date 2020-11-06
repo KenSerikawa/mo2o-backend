@@ -2,10 +2,14 @@
 
 namespace App\Tests\Api;
 
-use App\Api\ApiClient;
 use GuzzleHttp\Client;
+use App\Api\ApiClient;
 use GuzzleHttp\Psr7\Response;
 use GuzzleHttp\ClientInterface;
+use Psr\Http\Message\RequestInterface;
+use Psr\Http\Message\ResponseInterface;
+use GuzzleHttp\Exception\ClientException;
+use App\Api\Exception\BeerNotFoundException;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
 final class ApiClientTest extends WebTestCase
@@ -87,5 +91,34 @@ final class ApiClientTest extends WebTestCase
             $this->assertNotNull($beer['first_brewed']);
             $this->assertCount(6, $beer);
         }
+    }
+
+    /** @test */
+    public function shouldThrowExceptionWhenBeerNotFound()
+    {
+        $this->expectException(BeerNotFoundException::class);
+        $id = 987113;
+        $clientMock = $this->createMock(Client::class);
+        
+        /** @var RequestInterface $requestMock */ 
+        $requestMock = $this->createMock(RequestInterface::class);
+        
+        /** @var ResponseInterface $responseMock */ 
+        $responseMock = $this->createMock(ResponseInterface::class);
+        $exception = new ClientException(
+            'Beer not found',
+            $requestMock,
+            $responseMock
+        );
+
+        $clientMock->expects($this->once())
+            ->method('get')
+            ->with("beers/{$id}", [])
+            ->willThrowException($exception);
+
+        /** @var ClientInterface $clientMock */  
+        $httpClient = new ApiClient($clientMock);
+
+        $httpClient->beerDetails($id);
     }
 }
