@@ -19,12 +19,14 @@ final class GetBeerDetailsController
     
     public function __invoke(string $id): JsonResponse
     {   
+        $response = new JsonResponse();
         try {
-            return new JsonResponse(
-                $this->client->beerDetails($id)
-            );
+            $response->setData($this->client->beerDetails($id));
         } catch (BeerNotFoundException $e) {
-            return new JsonResponse(['message' => $e->getMessage()], $e->getCode());
+            $response->setData(['message' => $e->getMessage()])
+                     ->setStatusCode($e->getCode());
+        } finally {
+            return $response;
         }
     }
 }
