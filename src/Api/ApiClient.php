@@ -7,6 +7,7 @@ namespace App\Api;
 use GuzzleHttp\Client;
 use App\Api\ApiClientInterface;
 use GuzzleHttp\ClientInterface;
+use App\Api\Exception\BeerNotFoundException;
 
 use function Lambdish\Phunctional\get;
 use function Lambdish\Phunctional\map;
@@ -32,8 +33,12 @@ final class ApiClient implements ApiClientInterface
 
     public function beerDetails(string $id)
     {
-        $res = $this->client->get("beers/{$id}");
-       
+        try {
+            $res = $this->client->get("beers/{$id}");
+        } catch (\GuzzleHttp\Exception\GuzzleException $e) {
+            throw new BeerNotFoundException();
+        }
+        
         $beer = json_decode($res->getBody()->getContents(), true);
 
         return $this->parseBeerDetailsResponse($beer);
