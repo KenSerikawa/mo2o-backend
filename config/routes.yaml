@@ -2,3 +2,8 @@ app.get_beers:
     path: /beers
     controller: App\Controller\GetBeersController
     methods: GET
+
+app.get_beer_details:
+    path: /beers/{id}
+    controller: App\Controller\GetBeerDetailsController
+    methods: GET
