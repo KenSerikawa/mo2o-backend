@@ -35,3 +35,6 @@ services:
         arguments: 
             - { base_uri: '%env(PUNK_API_HOST)%' }
             
+    App\Api\ApiClient:
+        arguments:
+            - '@app.guzzle_client'
