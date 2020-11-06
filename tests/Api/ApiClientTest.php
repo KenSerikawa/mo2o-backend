@@ -105,20 +105,11 @@ final class ApiClientTest extends WebTestCase
         
         /** @var ResponseInterface $responseMock */ 
         $responseMock = $this->createMock(ResponseInterface::class);
+        
         $exception = new ClientException(
             'Beer not found',
             $requestMock,
             $responseMock
         );
-
-        $clientMock->expects($this->once())
-            ->method('get')
-            ->with("beers/{$id}", [])
-            ->willThrowException($exception);
-
-        /** @var ClientInterface $clientMock */  
-        $httpClient = new ApiClient($clientMock);
-
-        $httpClient->beerDetails($id);
     }
 }
