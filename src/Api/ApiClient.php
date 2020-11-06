@@ -21,7 +21,7 @@ final class ApiClient implements ApiClientInterface
         $this->client = $client;
     }
 
-    public function beers(string $query)
+    public function beers(?string $query)
     {
         $res = $this->client->get("beers", $this->prepareQueryParameters($query));
 

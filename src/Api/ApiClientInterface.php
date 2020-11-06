@@ -6,5 +6,5 @@ namespace App\Api;
 
 interface ApiClientInterface
 {
-    public function beers(string $query);
+    public function beers(?string $query);
 }
