@@ -1,3 +1,4 @@
-#index:
-#    path: /
-#    controller: App\Controller\DefaultController::index
+app.get_beers:
+    path: /beers
+    controller: App\Controller\GetBeersController
+    methods: GET
