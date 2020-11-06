@@ -20,6 +20,21 @@ final class ApiClient implements ApiClientInterface
 
     public function beers(string $query)
     {
+        $res = $this->client->get("beers", $this->prepareQueryParameters($query));
 
+        $beers = json_decode($res->getBody()->getContents(), true);
+    }
+
+    private function prepareQueryParameters(?string $query)
+    {
+        if (null !== $query) {
+            return [
+                'query' => [
+                    'food' => $query
+                ]
+            ];
+        }
+
+        return [];
     }
 }
